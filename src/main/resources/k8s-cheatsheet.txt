@@ -1,0 +1,14 @@
+shows a kubectl and a kubernetes cluster components version
+kubectl version
+
+shows a kubectl config
+kubectl config view
+
+shows a current context
+kubectl config current-context
+
+uses a particular context
+kubectl config use-context my-k8s
+
+adds a new cluster and use
+kubectl config set-credentials kubeuser/foo.kubernetes.com\ --usename=kubeuser --password=kubepassword

@@ -30,6 +30,13 @@
             <artifactId>langchain4j-google-ai-gemini</artifactId>
             <version>1.12.1</version>
         </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-easy-rag -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-easy-rag</artifactId>
+            <version>1.12.1-beta21</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

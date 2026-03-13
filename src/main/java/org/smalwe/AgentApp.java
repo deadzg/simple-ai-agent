@@ -3,7 +3,8 @@ package org.smalwe;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.agent.tool.ToolSpecifications;
-import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.document.Document;
+import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
@@ -12,6 +13,7 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
+import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.tool.DefaultToolExecutor;
 import dev.langchain4j.service.tool.ToolExecutor;
 
@@ -31,7 +33,10 @@ public class AgentApp {
                 .modelName(GEMINI_MODEL_NAME)
                 .build();
 
-        llmCallUsingToolCall(model);
+        llmCallUsingSimpleAssistant(model);
+
+//        List<Document> documents = FileSystemDocumentLoader.loadDocuments("src/main/resources/");
+
     }
 
     /**
@@ -130,6 +135,15 @@ public class AgentApp {
                 printChatResponse(chatResponse2);
             }
         }
+    }
+
+    public static void llmCallUsingSimpleAssistant(ChatModel chatModel) {
+        // Create instance of AI Service
+        SimpleAssistant simpleAssistant = AiServices.create(SimpleAssistant.class, chatModel);
+
+        // Make a call to LLM
+        String result = simpleAssistant.chat("What is today's date?");
+        System.out.println(result);
     }
 
     private static void printChatResponse(ChatResponse chatResponse) {
