@@ -3,12 +3,15 @@ package org.smalwe;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.agent.tool.ToolSpecifications;
+import dev.langchain4j.chain.ConversationalChain;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.memory.ChatMemory;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
@@ -33,7 +36,7 @@ public class AgentApp {
                 .modelName(GEMINI_MODEL_NAME)
                 .build();
 
-        llmCallUsingSimpleAssistant(model);
+        llmCallUsingChatMemory(model);
 
 //        List<Document> documents = FileSystemDocumentLoader.loadDocuments("src/main/resources/");
 
@@ -143,6 +146,21 @@ public class AgentApp {
 
         // Make a call to LLM
         String result = simpleAssistant.chat("What is today's date?");
+        System.out.println(result);
+    }
+
+    public static void llmCallUsingChatMemory(ChatModel chatModel) {
+        ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(5);
+
+        ConversationalChain conversationalChain = ConversationalChain.builder()
+                .chatMemory(chatMemory)
+                .chatModel(chatModel)
+                .build();
+
+        String result = conversationalChain.execute("Who directed Mission Impossible Movie?");
+        System.out.println(result);
+
+        result = conversationalChain.execute("Who is the cast in the movie?");
         System.out.println(result);
     }
 
