@@ -10,15 +10,19 @@ import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
+import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.tool.DefaultToolExecutor;
 import dev.langchain4j.service.tool.ToolExecutor;
+import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
+import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,9 +40,7 @@ public class AgentApp {
                 .modelName(GEMINI_MODEL_NAME)
                 .build();
 
-        llmCallUsingChatMemory(model);
-
-//        List<Document> documents = FileSystemDocumentLoader.loadDocuments("src/main/resources/");
+        llmCallUsingEasyRAG(model);
 
     }
 
@@ -161,6 +163,21 @@ public class AgentApp {
         System.out.println(result);
 
         result = conversationalChain.execute("Who is the cast in the movie?");
+        System.out.println(result);
+    }
+
+    public static void llmCallUsingEasyRAG(ChatModel chatModel) {
+        List<Document> documents = FileSystemDocumentLoader.loadDocuments("src/main/resources/");
+
+        InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
+        EmbeddingStoreIngestor.ingest(documents, embeddingStore);
+
+        SimpleAssistant simpleAssistant = AiServices.builder(SimpleAssistant.class)
+                                            .chatModel(chatModel)
+                                            .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
+                                            .contentRetriever(EmbeddingStoreContentRetriever.from(embeddingStore))
+                                            .build();
+        String result = simpleAssistant.chat("get docker container logs");
         System.out.println(result);
     }
 

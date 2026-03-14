@@ -37,6 +37,11 @@
             <version>1.12.1-beta21</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>ai.djl.huggingface</groupId>
+            <artifactId>tokenizers</artifactId>
+            <version>0.28.0</version>
+        </dependency>
     </dependencies>
 
 </project>
