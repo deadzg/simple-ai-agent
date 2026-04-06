@@ -7,3 +7,5 @@
 - [x] Understand how to use EasyRAG
 - [ ] Understand high level AI Services API
 - [ ] Understand ChatMemory
+- [ ] Integrate Google Gemini Config with Milvus Embedding Function
+- [ ] Insert document to Milvus
